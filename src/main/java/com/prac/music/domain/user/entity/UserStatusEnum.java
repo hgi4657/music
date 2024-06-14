@@ -1,9 +1,9 @@
 package com.prac.music.domain.user.entity;
 
 public enum UserStatusEnum {
-    TEMPORARY(Authority.TEMPORARY),
-    NORMAL(Authority.NORMAL),
-    SECESSION(Authority.SECESSION);
+    TEMPORARY(Authority.TEMPORARY),  // 이메일 인증 전
+    NORMAL(Authority.NORMAL),  // 이메일 인증 완료
+    SECESSION(Authority.SECESSION);  // 회원 탈퇴
 
     private final String authority;
 
@@ -20,6 +20,4 @@ public enum UserStatusEnum {
         public static final String NORMAL = "NORMAL";
         public static final String SECESSION = "SECESSION";
     }
-
-
 }
