@@ -53,7 +53,7 @@ class UserTest {
                 .profileImage(profileImage)
                 .build();
 
-        // when
+        // then
         assertEquals(1L, user.getId());
         assertEquals(userid, user.getUserId());
         assertEquals(email, user.getEmail());
