@@ -29,7 +29,44 @@ class UserTest {
     }
 
     @Test
-    @DisplayName("isExist Test : ")
+    @DisplayName("User Constructor Test")
+    void test() {
+        // given
+        String userid = "userId";
+        String email = "email@email.com";
+        String password = "Password123!";
+        String name = "name";
+        String intro = "into Text";
+        String refreshToken = "refreshToken";
+        String profileImage = "profileImage.jpg";
+
+        // when
+        User user = User.builder()
+                .id(1L)
+                .userId(userid)
+                .email(email)
+                .password(password)
+                .name(name)
+                .intro(intro)
+                .userStatusEnum(UserStatusEnum.TEMPORARY)
+                .refreshToken(refreshToken)
+                .profileImage(profileImage)
+                .build();
+
+        // when
+        assertEquals(1L, user.getId());
+        assertEquals(userid, user.getUserId());
+        assertEquals(email, user.getEmail());
+        assertEquals(password, user.getPassword());
+        assertEquals(name, user.getName());
+        assertEquals(intro, user.getIntro());
+        assertEquals(UserStatusEnum.TEMPORARY, user.getUserStatusEnum());
+        assertEquals(refreshToken, user.getRefreshToken());
+        assertEquals(profileImage, user.getProfileImage());
+    }
+
+    @Test
+    @DisplayName("isExist Test")
     void test1() {
         // given
 
