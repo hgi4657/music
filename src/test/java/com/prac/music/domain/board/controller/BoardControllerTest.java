@@ -2,11 +2,16 @@ package com.prac.music.domain.board.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prac.music.domain.board.dto.BoardRequestDto;
+import com.prac.music.domain.board.dto.BoardResponseDto;
+import com.prac.music.domain.board.entity.Board;
 import com.prac.music.domain.board.service.BoardService;
+import com.prac.music.domain.user.entity.User;
 import com.prac.music.withMockCustom.WithMockCustomUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,6 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -38,13 +45,16 @@ class BoardControllerTest {
     @MockBean
     private BoardService boardService;
 
-    BoardRequestDto body;
+    @Mock
+    User user;
+
+    BoardRequestDto requestDto;
 
     @BeforeEach
     public void setup() {
         String title = "Text title";
         String content = "Text content";
-        body = new BoardRequestDto(title, content);
+        requestDto = new BoardRequestDto(title, content);
     }
 
     @Test
@@ -52,7 +62,7 @@ class BoardControllerTest {
     @DisplayName("Board Create Test")
     void test1() throws Exception {
         // given
-        String content = objectMapper.writeValueAsString(body);
+        String content = objectMapper.writeValueAsString(requestDto);
         MockMultipartFile files = new MockMultipartFile("file", "file".getBytes());
         MockMultipartFile board = new MockMultipartFile("board", "", "application/json", content.getBytes(StandardCharsets.UTF_8));
 
@@ -118,11 +128,28 @@ class BoardControllerTest {
     @DisplayName("Board Get All Test")
     void test4() throws Exception {
         // given
+        Board board1 = Board.builder()
+                .title("Update title 1")
+                .contents("Update content 1")
+                .user(user)
+                .build();
+        Board board2 = Board.builder()
+                .title("Update title 2")
+                .contents("Update content 2")
+                .user(user)
+                .build();
+        List<BoardResponseDto> boards = Arrays.asList(
+                new BoardResponseDto(board1),
+                new BoardResponseDto(board2)
+        );
 
         // when
+        Mockito.when(boardService.getAllBoard()).thenReturn(boards);
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/boards/list"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/boards/list")
+                    .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -134,10 +161,20 @@ class BoardControllerTest {
         // given
         Long boardId = 1L;
 
+        Board board = Board.builder()
+                .title("title 1")
+                .contents("content 1")
+                .user(user)
+                .build();
+        BoardResponseDto boardResponseDto = new BoardResponseDto(board);
+
         // when
+        Mockito.when(boardService.getBoardById(boardId)).thenReturn(boardResponseDto);
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/boards/{id}", boardId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/boards/{id}", boardId)
+                        .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().isOk())
                 .andDo(print());
     }
