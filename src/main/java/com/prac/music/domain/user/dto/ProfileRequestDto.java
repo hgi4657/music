@@ -4,11 +4,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class ProfileRequestDto {
     @NotBlank(message = "이름 입력은 필수입니다.")
+    @Pattern(regexp = "^[가-힣a-zA-Z]+$", message = "유효한 이름을 입력해주세요.")
     private String name;  // 이름
 
     @NotBlank(message = "이메일 입력은 필수입니다.")
